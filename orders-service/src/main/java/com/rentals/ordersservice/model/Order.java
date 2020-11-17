@@ -10,14 +10,16 @@ public class Order {
     private String renterId;
     private String productId;
     private String status;
+    private String userStatus;
 
     public Order() { }
 
-    public Order(String sellerId, String renterId, String productId, String status) {
+    public Order(String sellerId, String renterId, String productId, String status, String userStatus) {
         this.sellerId = sellerId;
         this.renterId = renterId;
         this.productId = productId;
         this.status = status;
+        this.userStatus = userStatus;
     }
 
     public String getId() {
@@ -54,5 +56,13 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
     }
 }
