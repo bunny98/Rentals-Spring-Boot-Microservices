@@ -38,4 +38,13 @@ public class UserController {
         List<User> users = userRepository.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity deleteUserById(@RequestParam("id") String id){
+        if(userRepository.existsById(id)){
+            userRepository.deleteById(id);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
 }

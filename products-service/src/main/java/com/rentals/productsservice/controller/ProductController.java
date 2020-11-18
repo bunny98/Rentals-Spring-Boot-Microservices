@@ -28,7 +28,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/getAllProducts")
+    @GetMapping("/getAll")
     public ResponseEntity<List<Product>> getAllProducts() {
         try {
             List<Product> products = new ArrayList<>(productRepository.findAll());
@@ -45,7 +45,7 @@ public class ProductController {
     }
 
     @GetMapping("/getByCollegeId")
-    public ResponseEntity<List<Product>> getProductWithCollegeId(@RequestParam("collegeId") String collegeId){
+    public ResponseEntity<List<Product>> getProductsWithCollegeId(@RequestParam("collegeId") String collegeId){
         List<Product> products = productRepository.findByCollegeIdAndStatus(collegeId, "ACTIVE");
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
@@ -56,23 +56,26 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @PutMapping(value="/updateProduct", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @GetMapping("/getStatus")
+    public ResponseEntity<String> getProductStatus(@RequestParam("id") String id){
+        Optional<Product> productData = productRepository.findById(id);
+        return productData.map(product -> new ResponseEntity<>(product.getStatus(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    }
+
+    @PatchMapping(value="/update", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseEntity<Product> updateProduct(@RequestParam("id") String id, Product product){
         Optional<Product> productData = productRepository.findById(id);
         if(productData.isPresent()){
             Product prod = productData.get();
             prod.setName(product.getName());
-            prod.setSellerId(product.getSellerId());
-            prod.setCollegeId(product.getCollegeId());
             prod.setPrice(product.getPrice());
             prod.setContentURLs(product.getContentURLs());
-            prod.setStatus(product.getStatus());
             return new ResponseEntity<>(productRepository.save(prod), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/markProductInactive")
+    @PatchMapping(value="/markProductInactive")
     public ResponseEntity<Product> markProductInactive(@RequestParam("id") String id){
         Optional<Product> productData = productRepository.findById(id);
         if(productData.isPresent()){
@@ -85,11 +88,10 @@ public class ProductController {
 
     @DeleteMapping("/delete")
     public ResponseEntity deleteProductWithId(@RequestParam("id") String id){
-        try {
+        if(productRepository.existsById(id)){
             productRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(HttpStatus.OK);
         }
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 }
