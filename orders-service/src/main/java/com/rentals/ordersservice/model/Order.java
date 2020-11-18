@@ -11,15 +11,17 @@ public class Order {
     private String productId;
     private String status;
     private String userStatus;
+    private long timestamp;
 
     public Order() { }
 
-    public Order(String sellerId, String renterId, String productId, String status, String userStatus) {
+    public Order(String sellerId, String renterId, String productId, String status, String userStatus, long timestamp) {
         this.sellerId = sellerId;
         this.renterId = renterId;
         this.productId = productId;
         this.status = status;
         this.userStatus = userStatus;
+        this.timestamp = timestamp;
     }
 
     public String getId() {
@@ -64,5 +66,13 @@ public class Order {
 
     public void setUserStatus(String userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(int timestamp) {
+        this.timestamp = timestamp;
     }
 }
