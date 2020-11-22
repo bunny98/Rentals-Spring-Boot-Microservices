@@ -89,7 +89,7 @@ public class Order {
  }
 ```
 **Note**: The empty constructor is for RestTemplate.<br>
-Create a repository file to act as an interface between your application and the mongoDB database. The following *OrderRespository* class extends the *MongoRepository* interface and so its methods like *findById* can be called using an object of *OrderRepository*.
+Create a repository file to act as an interface between your application and the mongoDB database. The following *OrderRespository* interface extends the *MongoRepository* interface and so its methods like *findById* can be called using an object of *OrderRepository*.
 ```
 public interface OrderRepository extends MongoRepository<Order, String> {
     List<Order> findByRenterIdAndStatus(String renterId, String status, Sort sort);
