@@ -7,7 +7,7 @@ College OLX Flutter Application's backend microservices using Spring boot.
 </p>
 The following services have been implemented which handle queries related to them:
 <ul>
-   <li> *Users Service*</li>
+   <li> **Users Service**</li>
    <li> *Products Service* </li>
   <li> *Colleges Service* </li>
   <li> *Orders Service* </li>
