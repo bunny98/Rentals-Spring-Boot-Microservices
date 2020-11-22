@@ -61,3 +61,41 @@ Add the Eureka Client Annotation to the application's main java class:
 After doing so for all the four services, run them and check Eureka Server's url (by default in port 8761) to see if your services have been registered.
 **Note:** Make sure MongoDB is active in your machine before running the above services.
 
+## MongoDB integration
+Create a model class to specify the structure of objects to be stored in the database. Orders service has the following model class:
+```
+public class Order {
+    @Id
+    private String id;
+
+    private String sellerId;
+    private String renterId;
+    private String productId;
+    private String status;
+    private String userStatus;
+    private long timestamp;
+
+    public Order() { }
+
+    public Order(String sellerId, String renterId, String productId, String status, String userStatus, long timestamp) {
+        this.sellerId = sellerId;
+        this.renterId = renterId;
+        this.productId = productId;
+        this.status = status;
+        this.userStatus = userStatus;
+        this.timestamp = timestamp;
+    }
+    //INCLUDES GETTERS AND SETTERS...
+ }
+```
+**Note**: The empty constructor is for RestTemplate.
+Create a repository file to act as an interface between your application and the mongoDB database. The following *OrderRespository* class extends the *MongoRepository* interface and so its methods like *findById* can be called using an object of *OrderRepository*.
+```
+public interface OrderRepository extends MongoRepository<Order, String> {
+    List<Order> findByRenterIdAndStatus(String renterId, String status, Sort sort);
+    List<Order> findBySellerIdAndStatus(String sellerId, String status, Sort sort);
+    List<Order> findByProductIdAndStatus(String productId, String status);
+}
+```
+**Spring manages the implementations of the above methods (Cool, right!?)**
+
