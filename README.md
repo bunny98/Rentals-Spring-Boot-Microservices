@@ -46,6 +46,18 @@ Next, add the following annotation the DiscoveryServerApplication class in *Disc
 ```
 Now Run the application. By default it will run in port 8761, which can be altered by specifying the *server.port* property.
 
-### User, College and Product Services
-
+### User, College, Order and Product Services
+Specify the following properties for each of the four services in their *application.properties* file:
+```
+server.port=port_number_for_each_service
+spring.data.mongodb.database=db_name_for_each_service
+spring.data.mongodb.port=27017
+spring.application.name=service-name
+```
+Add the Eureka Client Annotation to the application's main java class:
+```
+@EnableEurekaClient
+```
+After doing so for all the four services, run them and check Eureka Server's url (by default in port 8761) to see if your services have been registered.
+**Note:** Make sure MongoDB is active in your machine before running the above services.
 
