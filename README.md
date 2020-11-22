@@ -12,7 +12,16 @@ The following services have been implemented which handle queries related to the
   <li> Colleges Service </li>
   <li> Orders Service </li>
 </ul>   
-For service discovery mechanism, additional "Discovery Server" has also been implemented.
+Inter-service communication happens through Eureka Server so an additional *Discovery Server* has also been implemented. The schematic diagram above represents how *Orders Service* communicates with *Products service* through Eureka Server. Following are the steps:
+
+<ul>
+   <li> At their startup, each of the four services register themselves with the Discovery Server </li>
+   <li> When one service requires to communicate with the other, it looks up the Discovery Server for the target service's address </li>
+   <li> The Discovery Server returns the address of the required service in a load-balanced way if more than one instances of the target service is active </li>
+   <li> Request is now made to the target service from the client service </li>
+</ul>
+
+This type of service discovery is known as client-side service discovery as client is the one doing all the work!
    
 
 ### Service initiation
@@ -22,5 +31,7 @@ For service discovery mechanism, additional "Discovery Server" has also been imp
    <li> Spring Data MongoDB</li>
    <li> Eureka Discovery Client</li>
 </ul>
+
 For Discovery server only one dependency of "Eureka Server" has been used.
+
 
