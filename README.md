@@ -24,7 +24,7 @@ Inter-service communication happens through Eureka Server so an additional *Disc
 This type of service discovery is known as client-side service discovery as client is the one doing all the work!
    
 
-### Service initiation
+## Service initiation
 [Spring Initializer](https://start.spring.io) has been used to create spring applications of the above mentioned services(except Discovery Server) with the following dependencies:
 <ul>
    <li> Spring Web </li>
@@ -33,5 +33,19 @@ This type of service discovery is known as client-side service discovery as clie
 </ul>
 
 For Discovery server only one dependency of "Eureka Server" has been used.
+
+### Discovery Server
+Eureka servers have a tendency of registering themselves to enable communication between multiple Eureka servers. But since we only have one discovery server, we don't need it to register itself. So add the following lines to *application.properties* file:
+```
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+```
+Next, add the following annotation the DiscoveryServerApplication class in *DiscoveryServerApplication.java* file to mark the application as an Eureka Server:
+```
+@EnableEurekaServer
+```
+Now Run the application. By default it will run in port 8761, which can be altered by specifying the *server.port* property.
+
+### User, College and Product Services
 
 
