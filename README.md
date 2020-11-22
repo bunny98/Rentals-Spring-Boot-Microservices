@@ -88,7 +88,7 @@ public class Order {
     //INCLUDES GETTERS AND SETTERS...
  }
 ```
-**Note**: The empty constructor is for RestTemplate.
+**Note**: The empty constructor is for RestTemplate.<br>
 Create a repository file to act as an interface between your application and the mongoDB database. The following *OrderRespository* class extends the *MongoRepository* interface and so its methods like *findById* can be called using an object of *OrderRepository*.
 ```
 public interface OrderRepository extends MongoRepository<Order, String> {
@@ -99,3 +99,19 @@ public interface OrderRepository extends MongoRepository<Order, String> {
 ```
 **Spring manages the implementations of the above methods (Cool, right!?)**
 
+## BASIC APIs
+Create a REST controller class which tells the application where to route http requests. Following is the controller class for *Orders Service*:
+```
+@RestController
+@RequestMapping(value = "/order")
+public class OrderController {
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    public ResponseEntity<Order> createOrder(Order order) {
+        //IMPLEMENTATION...
+    }
+ }
+```
+All the requests made to *Orders Service* with */order* suffix in the URL are mapped to methods of this class. So, a POST request to *http://localhost:service_port/order/create* are routed to the *createOrder* function. *Autowired* annotation makes sure that only one object of the OrderRepository class is formed. 
