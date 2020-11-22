@@ -1,5 +1,5 @@
 # Rentals-Spring-Boot-Microservices
-College OLX Flutter Application's backend microservices using Spring boot. **README UNDER PROCESS**
+College OLX Flutter Application's backend microservices using Spring boot.
 
 ## Overview
 <p align= "center">
@@ -118,4 +118,31 @@ public class OrderController {
 All the requests made to *Orders Service* with */order* suffix in the URL are mapped to methods of this class. So, a GET request to *http://localhost:service_port/order/getAll* is routed to the *getAllOrders* function. *Autowired* annotation makes sure that only one object of the OrderRepository class is formed. That's how basic APIs with no interaction with other services can be made.
 
 ## Inter-service communication
-
+Make a RestTemplate Bean in the main application class. Beans are used for dependency injection in java. Read more about it [here](https://www.baeldung.com/spring-bean)
+```
+   @Bean
+	@LoadBalanced
+	public RestTemplate getRestTemplate(){
+		RestTemplate restTemplate = new RestTemplate();
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+		restTemplate.setRequestFactory(requestFactory);
+		return restTemplate;
+	}
+```
+*LoadBalanced* bean makes sure that addresses of service instances are returned in a load balanced way.<br>
+Now inside the controller class, get an instance of RestTemplate object:
+```
+    @Autowired
+    private RestTemplate restTemplate;
+```
+Use this object to make requests to other services which are registered in the Eureka Server.
+```
+String uri = "http://products-service/product/getStatus?id=abshsjaskdka"
+String status = restTemplate.getForObject(uri, String.class);
+```
+**IMPORTANT NOTES:**
+<ul>
+   <li> The "products-service" in the uri is the spring.application.name property of the target service. </li>
+   <li> "restTemplate.getForObject" parses the response into the specified object and returns the object. </li>
+   <li> Make sure the Class passed in the getForObject method has an empty constructor because RestTemplate lazily sets the values of the class data members </li>
+</ul>
