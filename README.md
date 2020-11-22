@@ -145,4 +145,13 @@ String status = restTemplate.getForObject(uri, String.class);
    <li> The "products-service" in the uri is the spring.application.name property of the target service. </li>
    <li> "restTemplate.getForObject" parses the response into the specified object and returns the object. </li>
    <li> Make sure the Class passed in the getForObject method has an empty constructor because RestTemplate lazily sets the values of the class data members </li>
+<li> In the background, RestTemplate looks up the Discovery Server to get the real address of the products-service instance, and then makes the request to one of its instances in a load balanced way. </li>
 </ul>
+
+## TODOs
+
+- [x] Setup Services
+- [x] Write Basic APIs
+- [x] Implement Service Discovery
+- [ ] Websocket Connections to Client devices in Orders Service
+- [ ] Automated FCM Notifications
