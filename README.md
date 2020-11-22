@@ -1,5 +1,5 @@
 # Rentals-Spring-Boot-Microservices
-College OLX Flutter Application's Backend services
+College OLX Flutter Application's Backend microservices in Spring boot.  
 
 ## Overview
 <p align= "center">
