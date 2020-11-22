@@ -108,10 +108,14 @@ public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
 
-    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseEntity<Order> createOrder(Order order) {
-        //IMPLEMENTATION...
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Order>> getAllOrders(){
+        List<Order> orders = orderRepository.findAll();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
  }
 ```
-All the requests made to *Orders Service* with */order* suffix in the URL are mapped to methods of this class. So, a POST request to *http://localhost:service_port/order/create* are routed to the *createOrder* function. *Autowired* annotation makes sure that only one object of the OrderRepository class is formed. 
+All the requests made to *Orders Service* with */order* suffix in the URL are mapped to methods of this class. So, a GET request to *http://localhost:service_port/order/getAll* is routed to the *getAllOrders* function. *Autowired* annotation makes sure that only one object of the OrderRepository class is formed. That's how basic APIs with no interaction with other services can be made.
+
+## Inter-service communication
+
