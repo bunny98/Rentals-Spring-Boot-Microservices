@@ -11,7 +11,8 @@ The following services have been implemented which handle queries related to the
    <li> Products Service </li>
   <li> Colleges Service </li>
   <li> Orders Service </li>
-</ul>   
+</ul>
+
 Inter-service communication happens through Eureka Server so an additional *Discovery Server* has also been implemented. The schematic diagram above represents how *Orders Service* communicates with *Products service* through Eureka Server. Following are the steps:
 
 <ul>
