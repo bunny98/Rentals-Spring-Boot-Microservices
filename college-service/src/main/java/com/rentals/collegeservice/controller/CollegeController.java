@@ -3,11 +3,15 @@ package com.rentals.collegeservice.controller;
 import com.rentals.collegeservice.model.College;
 import com.rentals.collegeservice.repository.CollegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -25,19 +29,34 @@ public class CollegeController {
     }
 
     @GetMapping("/getById")
-    public ResponseEntity<College> getCollegeById(@RequestParam("id") String id) {
+    @Cacheable(value = "colleges", key = "#id", unless = "#result.numOfStudents < 5")
+    public College getCollegeById(@RequestParam("id") String id) {
+
+        System.out.println("FETCHING COLLEGE WITH ID "+id);
         Optional<College> collegeData = collegeRepository.findById(id);
         if (collegeData.isPresent()) {
-            return new ResponseEntity<>(collegeData.get(), HttpStatus.OK);
+            return  collegeData.get();
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return null;
     }
 
+    @PatchMapping("/increaseStudentCount")
+    @CachePut(value = "colleges", key = "#college.id")
+    public ResponseEntity increaseStudentCount(@RequestParam ("id") String id){
+        Optional<College> collegeData = collegeRepository.findById(id);
+        if (collegeData.isPresent()) {
+            College college = collegeData.get();
+            college.setNumOfStudents(college.getNumOfStudents() + 1);
+            collegeRepository.save(college);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseEntity<College> createCollege(College college) {
+    public ResponseEntity<College> createCollege(@Valid College college) {
         try {
-            College newCollege = collegeRepository.save(new College(college.getName()));
+            College newCollege = collegeRepository.save(new College(college.getName(), 0));
             return new ResponseEntity<>(newCollege, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -45,7 +64,8 @@ public class CollegeController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deleteHostel(@RequestParam("id") String id) {
+    @CacheEvict(value = "colleges", key = "#user.id")
+    public ResponseEntity delete(@RequestParam("id") String id) {
         try {
             collegeRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -53,4 +73,16 @@ public class CollegeController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/deleteAll")
+    @CacheEvict(value = "colleges", allEntries = true)
+    public  ResponseEntity deleteAll(){
+        try{
+            collegeRepository.deleteAll();
+            return new ResponseEntity(null,HttpStatus.OK);
+        }catch (Exception e){
+            return  new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

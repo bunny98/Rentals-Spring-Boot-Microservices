@@ -2,6 +2,8 @@ package com.rentals.ordersservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +12,10 @@ import org.springframework.web.client.RestTemplate;
 
 import static org.apache.http.HttpHeaders.TIMEOUT;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+		MongoAutoConfiguration.class,
+		MongoDataAutoConfiguration.class
+})
 @EnableEurekaClient
 public class OrdersServiceApplication {
 

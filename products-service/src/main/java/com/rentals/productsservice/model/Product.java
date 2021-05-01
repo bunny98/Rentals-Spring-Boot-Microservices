@@ -2,16 +2,21 @@ package com.rentals.productsservice.model;
 
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class Product {
     @Id
     private String id;
 
+    @NotNull
     private String name;
+    @NotNull
     private String sellerId;
+    @NotNull
     private String collegeId;
     private String status;
+    @NotNull
     private int price;
     private List<String> contentURLs;
 

@@ -2,12 +2,17 @@ package com.rentals.userservice.model;
 
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotNull;
+
 public class User {
     @Id
     private String id;
 
+    @NotNull
     private String name;
+    @NotNull
     private String collegeId;
+    @NotNull
     private String mobileNumber;
 
     public User() {
