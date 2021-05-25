@@ -157,3 +157,4 @@ String status = restTemplate.getForObject(uri, String.class);
 - [x] Implement Service Discovery
 - [x] Server sent events(SSE) in Orders Service
 - [ ] Automated FCM Notifications
+- [ ] Zipkin Integration
