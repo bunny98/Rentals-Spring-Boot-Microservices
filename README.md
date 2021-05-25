@@ -2,7 +2,13 @@
 Backend services are the heart and soul of every application, and so a lot of things like the type of database(DB) to use, minimising DB interactions and API calls, implementing efficient caching and load-balancing mechanisms, scalability, cost-efficiency, etc. have to be kept in mind while writing a production-grade application's backend services.
 Starting with the basics, I implemented a microservices based architecture as backend for my flutter application called "College OLX" using Spring Boot. The figure below shows how microservices architecture arranges an application as a collection of loosely coupled services which can be modified and scaled independently.
 
-## Overview
+## High Level Design
+<p align= "center">
+<img width="600" height="400" src="Pictures/RentalsHLD.png"><br>
+</p>
+
+
+## Service Interaction
 <p align= "center">
 <img width="600" height="400" src="Pictures/SchematicDiagram.png"><br>
 </p>
