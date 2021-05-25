@@ -4,7 +4,7 @@ Starting with the basics, I implemented a microservices based architecture as ba
 
 ## High Level Design
 <p align= "center">
-<img width="600" height="400" src="Pictures/RentalsHLD.png"><br>
+<img src="Pictures/RentalsHLD.png"><br>
 </p>
 
 
