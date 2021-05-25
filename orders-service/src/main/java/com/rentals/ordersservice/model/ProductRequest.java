@@ -1,6 +1,8 @@
 package com.rentals.ordersservice.model;
 
-public class ProductRequest {
+import java.io.Serializable;
+
+public class ProductRequest implements Serializable {
     private final String id;
     private final User renter;
     private String status;
@@ -25,5 +27,14 @@ public class ProductRequest {
 
     public String getStatus() {
         return status;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductRequest{" +
+                "id='" + id + '\'' +
+                ", renter=" + renter +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

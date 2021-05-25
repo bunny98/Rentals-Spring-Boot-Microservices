@@ -5,6 +5,8 @@ import com.rentals.productsservice.model.UserProduct;
 import com.rentals.productsservice.model.UserProductStatus;
 import com.rentals.productsservice.repository.ProductRepository;
 import org.apache.http.HttpEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,8 @@ public class ProductController {
     private final String orderServiceBaseURL = "http://orders-service/order/";
     private final String userServiceBaseURL = "http://users-service/user/";
 
+    private final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
+
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseEntity<Product> createProduct(@Valid Product product) {
         try {
@@ -37,11 +41,14 @@ public class ProductController {
             try {
                 restTemplate.getForEntity(uri, Void.class);
             }catch (Exception e){
+                LOGGER.info("USER {} DOESN'T BELONG TO THE COLLEGE {}", product.getSellerId(), product.getCollegeId());
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
             Product newProduct = productRepository.save(new Product(product.getName(), product.getSellerId(), product.getCollegeId(), "ACTIVE", product.getPrice(), product.getContentURLs()));
+            LOGGER.info("CREATED NEW PRODUCT {}", newProduct.toString());
             return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
         } catch (Exception e) {
+            LOGGER.error("ERROR CREATING NEW PRODUCT {}\n{}", product.toString(), e.getMessage());
             return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -50,8 +57,10 @@ public class ProductController {
     public ResponseEntity<List<Product>> getAllProducts() {
         try {
             List<Product> products = new ArrayList<>(productRepository.findAll());
+            LOGGER.info("GET ALL PRODUCTS LEN: {}", products.size());
             return new ResponseEntity<>(products, HttpStatus.OK);
         } catch (Exception e) {
+            LOGGER.error("ERROR GETTING ALL PRODUCTS \n{}", e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -59,12 +68,19 @@ public class ProductController {
     @GetMapping("/getById")
     public ResponseEntity<Product> getProductWithId(@RequestParam("id") String id) {
         Optional<Product> productData = productRepository.findById(id);
-        return productData.map(product -> new ResponseEntity<>(product, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if(productData.isPresent()){
+            Product product = productData.get();
+            LOGGER.info("GET PRODUCT BY ID: {} PRODUCT: {}", id, product.toString());
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
+        LOGGER.warn("PRODUCT WITH ID {} NOT FOUND", id);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/getByCollegeId")
     public ResponseEntity<List<Product>> getProductsWithCollegeId(@RequestParam("collegeId") String collegeId){
         List<Product> products = productRepository.findByCollegeIdAndStatus(collegeId, "ACTIVE");
+        LOGGER.info("GET PRODUCTS BY COLLEGE ID {} LEN: {}", collegeId,products.size());
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -88,20 +104,27 @@ public class ProductController {
             }
             userProducts.add(userProduct);
         }
-
+        LOGGER.info("GET LOBBY PRODUCTS BY USER {} COLLEGE ID: {} LEN: {}", userId, collegeId, userProducts.size());
         return new ResponseEntity<>(userProducts, HttpStatus.OK);
     }
 
     @GetMapping("/getMyProducts")
     public ResponseEntity<List<Product>> getMyProducts(@RequestParam("sellerId") String sellerId){
         List<Product> products = productRepository.findBySellerIdAndStatus(sellerId, "ACTIVE");
+        LOGGER.info("GET MY PRODUCTS USER ID: {} LEN: {}", sellerId, products.size());
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/getStatus")
     public ResponseEntity<String> getProductStatus(@RequestParam("id") String id){
         Optional<Product> productData = productRepository.findById(id);
-        return productData.map(product -> new ResponseEntity<>(product.getStatus(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+        if(productData.isPresent()){
+            Product product = productData.get();
+            LOGGER.info("GET PRODUCT STATUS ID: {} STATUS: {}", id, product.getStatus());
+            return new ResponseEntity<>(product.getStatus(), HttpStatus.OK);
+        }
+        LOGGER.warn("GET PRODUCT STATUS ID: {} NOT FOUND", id);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PatchMapping(value="/update", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
@@ -112,8 +135,11 @@ public class ProductController {
             prod.setName(product.getName());
             prod.setPrice(product.getPrice());
             prod.setContentURLs(product.getContentURLs());
-            return new ResponseEntity<>(productRepository.save(prod), HttpStatus.OK);
+            Product newProduct = productRepository.save(prod);
+            LOGGER.info("UPDATED PRODUCT: {}", newProduct.toString());
+            return new ResponseEntity<>(newProduct, HttpStatus.OK);
         }
+        LOGGER.warn("UPDATE PRODUCT NOT FOUND ID: {}", id);
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
@@ -123,8 +149,11 @@ public class ProductController {
         if(productData.isPresent()){
             Product product = productData.get();
             product.setStatus("INACTIVE");
-            return new ResponseEntity<>(productRepository.save(product), HttpStatus.OK);
+            Product newProd = productRepository.save(product);
+            LOGGER.info("MARKED PRODUCT INACTIVE ID {}", id);
+            return new ResponseEntity<>(newProd, HttpStatus.OK);
         }
+        LOGGER.warn("MARK PRODUCT INACTIVE PRODUCT NOT FOUND ID {}", id);
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
@@ -135,8 +164,10 @@ public class ProductController {
             String orderServiceURL = orderServiceBaseURL + "denyOrdersByProduct";
             String uri = UriComponentsBuilder.fromHttpUrl(orderServiceURL).queryParam("id", id).toUriString();
             restTemplate.delete(uri);
+            LOGGER.info("DELETED PRODUCT ID: {}", id);
             return new ResponseEntity(HttpStatus.OK);
         }
+        LOGGER.warn("DELETE PRODUCT ID {} NOT FOUND", id);
         return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 }

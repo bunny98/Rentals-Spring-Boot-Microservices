@@ -10,6 +10,15 @@ public class UserOrder {
     private List<String> sentReqProductIds;
     private List<String> receivedReqProductIds;
 
+    @Override
+    public String toString() {
+        return "UserOrder{" +
+                "id='" + id + '\'' +
+                ", sentReqProductIds=" + sentReqProductIds +
+                ", receivedReqProductIds=" + receivedReqProductIds +
+                '}';
+    }
+
     public UserOrder(String id, List<String> sentReqProductIds, List<String> receivedReqProductIds) {
         this.id = id;
         this.sentReqProductIds = sentReqProductIds;

@@ -2,9 +2,10 @@ package com.rentals.ordersservice.model;
 
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Product {
+public class Product implements Serializable {
     @Id
     private String id;
 

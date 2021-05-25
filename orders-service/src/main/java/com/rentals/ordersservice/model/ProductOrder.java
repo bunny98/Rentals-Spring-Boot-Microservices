@@ -1,10 +1,12 @@
 package com.rentals.ordersservice.model;
 
 import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
 import java.util.List;
 
 
-public class ProductOrder {
+public class ProductOrder implements Serializable {
     @Id
     private String productId;
     private Product product;
@@ -21,6 +23,17 @@ public class ProductOrder {
         this.seller = seller;
         this.status = status;
         this.receivedProductRequests = receivedProductRequests;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductOrder{" +
+                "productId='" + productId + '\'' +
+                ", product=" + product +
+                ", seller=" + seller +
+                ", status='" + status + '\'' +
+                ", receivedProductRequests=" + receivedProductRequests +
+                '}';
     }
 
     public String getProductId() {

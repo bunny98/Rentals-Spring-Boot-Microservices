@@ -43,4 +43,13 @@ public class College implements Serializable {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "College{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", numOfStudents=" + numOfStudents +
+                '}';
+    }
+
 }

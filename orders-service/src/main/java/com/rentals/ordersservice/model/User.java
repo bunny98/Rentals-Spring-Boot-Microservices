@@ -2,7 +2,9 @@ package com.rentals.ordersservice.model;
 
 import org.springframework.data.annotation.Id;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     @Id
     private String id;
 
@@ -12,6 +14,16 @@ public class User {
 
     public User() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", collegeId='" + collegeId + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                '}';
     }
 
     public User(String name, String collegeId, String mobileNumber) {
