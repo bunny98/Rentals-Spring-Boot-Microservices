@@ -155,5 +155,5 @@ String status = restTemplate.getForObject(uri, String.class);
 - [x] Setup Services
 - [x] Write Basic APIs
 - [x] Implement Service Discovery
-- [ ] Websocket Connections to Client devices in Orders Service
+- [x] Server sent events(SSE) in Orders Service
 - [ ] Automated FCM Notifications
