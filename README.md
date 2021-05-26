@@ -10,7 +10,7 @@ Starting with the basics, I implemented a microservices based architecture as ba
    <li> The whole application is divided into several loosly coupled microservices to make scaling/modification of the application easier.</li>
    <li> Netflix's Eureka is used as a service discovery server which records the information regarding each of the services and routes requests in a load-balanced way as per need.</li>
   <li> NoSQL MongoDB database is used because of its document-oriented storage of data and faster read requests as the Read to write request ratio is considered to be 4:1. Moreover, since no arbitary join operations are needed in the application, MongoDB seemed to be the best choice.</li>
-  <li> Redis Cache is used to cache frequently queried orders database, which is responsible for pushing real-time updates of product orders to client application through Server Sent Events or SSE. SSE was preferred over websocket connections because the commnuication is only supposed to be one-sided i.e., from server to client application. </li>
+  <li> Redis Cache is used to cache frequently queried orders database, which is responsible for pushing real-time updates of product orders to client application through Server Sent Events or SSE. SSE was preferred over websocket connections because the communication is only supposed to be one-sided i.e., from server to client application. </li>
 	<li> Zipkin is used for distributed request tracing, which forms a crucial element of microservice architecture as it helps in debugging the microservices by tracing request flow between the services. </li>
 </ul>
 
